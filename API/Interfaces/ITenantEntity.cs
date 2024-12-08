@@ -1,5 +1,5 @@
 
-namespace API.Entities
+namespace API.Interfaces
 {
     public interface ITenantEntity
     {

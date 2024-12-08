@@ -1,4 +1,6 @@
 
+using API.Interfaces;
+
 namespace API.Entities
 {
     public class Brand : BaseEntity, ITenantEntity

@@ -10,6 +10,6 @@ namespace API.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public string Id { get; set; }
         public string Name { get; set; }
-        public bool Isolated { get; set; }
+        public string? ConnectionString { get; set; }
     }
 }
