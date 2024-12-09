@@ -39,12 +39,12 @@ namespace API.Extensions
                 applicationDbContext.Database.SetConnectionString(connectionString);
 
                 // Check and apply pending migrations for the tenant database.
-                if (tenantDbContext.Database.GetPendingMigrations().Any())
+                if (applicationDbContext.Database.GetPendingMigrations().Any())
                 {
                     Console.ForegroundColor = ConsoleColor.Blue;
                     Console.WriteLine($"Applying migrations for tenant with ID '{tenant.Id}'.");
                     Console.ResetColor();
-                    tenantDbContext.Database.Migrate();
+                    applicationDbContext.Database.Migrate();
                 }
             }
 

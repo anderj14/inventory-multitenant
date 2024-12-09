@@ -4,6 +4,7 @@ using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations.AppDb
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241209143451_AddFieldToProduct")]
+    partial class AddFieldToProduct
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -193,9 +196,6 @@ namespace API.Migrations.AppDb
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -315,19 +315,19 @@ namespace API.Migrations.AppDb
                     b.HasData(
                         new
                         {
-                            Id = "ee0a1c9d-febb-4ea8-b73e-64a38a56ac69",
+                            Id = "6ac4ab16-d3db-4b9a-acac-f42355a31c84",
                             Name = "SuperAdmin",
                             NormalizedName = "SUPERADMIN"
                         },
                         new
                         {
-                            Id = "308f19f3-b3c4-4798-92d4-0b6f5ffa17a7",
+                            Id = "02e60541-d5c1-4faf-8d1e-0f9c3bf9311d",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "278ee299-0cf3-42ca-91b6-6319cbf02534",
+                            Id = "4ff7cb0e-3d36-4118-b167-1eb8db0c77c7",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         });

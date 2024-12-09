@@ -22,6 +22,8 @@ builder.Services.AddDbContext<TenantDbcontext>(
 );
 builder.Services.ApplyTenantMigrations(builder.Configuration);
 
+builder.Services.AddTransient<ITenantService, TenantService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
