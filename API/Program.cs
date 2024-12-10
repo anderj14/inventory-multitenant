@@ -1,6 +1,8 @@
 using API.Data;
+using API.Data.Repository;
 using API.Extensions;
 using API.Interfaces;
+using API.Middleware;
 using API.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,6 +24,10 @@ builder.Services.AddDbContext<TenantDbcontext>(
 );
 builder.Services.ApplyTenantMigrations(builder.Configuration);
 
+// builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
 builder.Services.AddTransient<ITenantService, TenantService>();
 
 var app = builder.Build();
@@ -36,6 +42,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseMiddleware<TenantResolver>();
 
 app.MapControllers();
 
