@@ -1,4 +1,3 @@
-
 using API.Entities;
 using API.Interfaces;
 using Microsoft.AspNetCore.Identity;
@@ -8,11 +7,6 @@ namespace API.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        // ApplicationDbContext is responsible for managing database operations in a multitenant context.
-        // The ActiveTenantId and ActiveTenantConnectionString properties are read-only and fetch values 
-        // from the ITenantContextService, ensuring the context always uses the current tenant's information.
-
-        // The constructor ensures that the TenantContextService is provided and not null, guaranteeing proper initialization.
         private readonly ITenantContextService _tenantContextService;
         public string ActiveTenantId { get; set; }
         public string ActiveTenantConnectionString { get; set; }
@@ -24,21 +18,72 @@ namespace API.Data
             ActiveTenantConnectionString = _tenantContextService.ConnectionString;
         }
 
+        public DbSet<AppUser> Users { get; set; }
+        public DbSet<IdentityRole> Roles { get; set; }
+        public DbSet<IdentityUserRole<string>> UserRoles { get; set; }
+        public DbSet<IdentityUserClaim<string>> UserClaims { get; set; }
+        public DbSet<IdentityUserLogin<string>> UserLogins { get; set; }
+        public DbSet<IdentityRoleClaim<string>> RoleClaims { get; set; }
+        public DbSet<IdentityUserToken<string>> UserTokens { get; set; }
+
         public DbSet<Product> Products { get; set; }
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<InventoryMovement> InventoryMovements { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
-        public DbSet<AppUser> AppUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
 
-            // modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+            modelBuilder.Entity<AppUser>(b =>
+            {
+                b.ToTable("AspNetUsers");
+                b.HasKey(u => u.Id);
+                b.HasIndex(u => u.NormalizedUserName).IsUnique();
+                b.HasIndex(u => u.NormalizedEmail).IsUnique();
+                b.Property(u => u.ConcurrencyStamp).IsConcurrencyToken();
+            });
+
+            modelBuilder.Entity<IdentityRole>(b =>
+            {
+                b.ToTable("AspNetRoles");
+                b.HasKey(r => r.Id);
+                b.HasIndex(r => r.NormalizedName).IsUnique();
+            });
+
+            modelBuilder.Entity<IdentityUserRole<string>>(b =>
+            {
+                b.ToTable("AspNetUserRoles");
+                b.HasKey(r => new { r.UserId, r.RoleId });
+            });
+
+            modelBuilder.Entity<IdentityUserClaim<string>>(b =>
+            {
+                b.ToTable("AspNetUserClaims");
+                b.HasKey(uc => uc.Id);
+            });
+
+            modelBuilder.Entity<IdentityUserLogin<string>>(b =>
+            {
+                b.ToTable("AspNetUserLogins");
+                b.HasKey(l => new { l.LoginProvider, l.ProviderKey });
+            });
+
+            modelBuilder.Entity<IdentityRoleClaim<string>>(b =>
+            {
+                b.ToTable("AspNetRoleClaims");
+                b.HasKey(rc => rc.Id);
+            });
+
+            modelBuilder.Entity<IdentityUserToken<string>>(b =>
+            {
+                b.ToTable("AspNetUserTokens");
+                b.HasKey(t => new { t.UserId, t.LoginProvider, t.Name });
+            });
 
             // Multitenant query filter
-            // ApplyTenantQueryFilters(modelBuilder);
             modelBuilder.Entity<Product>().HasQueryFilter(x => x.TenantId == ActiveTenantId);
             modelBuilder.Entity<Brand>().HasQueryFilter(x => x.TenantId == ActiveTenantId);
             modelBuilder.Entity<Category>().HasQueryFilter(x => x.TenantId == ActiveTenantId);
@@ -58,36 +103,29 @@ namespace API.Data
             .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<IdentityRole>().HasData(
-                    new IdentityRole
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        Name = "SuperAdmin",
-                        NormalizedName = "SUPERADMIN"
-                    },
-                    new IdentityRole
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        Name = "Admin",
-                        NormalizedName = "ADMIN"
-                    },
-                    new IdentityRole
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        Name = "Member",
-                        NormalizedName = "MEMBER"
-                    }
-                );
+                   new IdentityRole
+                   {
+                       Id = Guid.NewGuid().ToString(),
+                       Name = "SuperAdmin",
+                       NormalizedName = "SUPERADMIN"
+                   },
+                   new IdentityRole
+                   {
+                       Id = Guid.NewGuid().ToString(),
+                       Name = "Admin",
+                       NormalizedName = "ADMIN"
+                   },
+                   new IdentityRole
+                   {
+                       Id = Guid.NewGuid().ToString(),
+                       Name = "Member",
+                       NormalizedName = "MEMBER"
+                   }
+               );
         }
-
-        // private void ApplyTenantQueryFilters(ModelBuilder modelBuilder)
-        // {
-
-
-        // }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // Use the tenant connection string enabled
             string tenantConnectionString = ActiveTenantConnectionString;
             if (!string.IsNullOrEmpty(tenantConnectionString))
             {
@@ -107,8 +145,7 @@ namespace API.Data
                         break;
                 }
             }
-            var result = base.SaveChanges();
-            return result;
+            return base.SaveChanges();
         }
     }
 }

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations.TenantDb
 {
     [DbContext(typeof(TenantDbcontext))]
-    [Migration("20241208144728_InitialTenant")]
+    [Migration("20241212210402_InitialTenant")]
     partial class InitialTenant
     {
         /// <inheritdoc />

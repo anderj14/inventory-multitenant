@@ -8,7 +8,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Services
 {
-    public class TenantService(TenantDbcontext _context, IConfiguration _configuration, IServiceProvider _serviceProvider) : ITenantService
+    public class TenantService(
+        TenantDbcontext _context,
+        IConfiguration _configuration,
+        IServiceProvider _serviceProvider
+        ) : ITenantService
     {
         public async Task<Tenant> CreateAsync(TenantCreateDto tenantCreateDto)
         {
@@ -93,6 +97,11 @@ namespace API.Services
             await _context.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<bool> TenantExistsAsync(string tenantId)
+        {
+            return await _context.Tenants.AnyAsync(t => t.Id == tenantId);
         }
     }
 }

@@ -10,5 +10,6 @@ namespace API.Interfaces
         Task<ICollection<Tenant>> GetAllTenantsAsync();
         Task<Tenant> GetTenantByIdAsync(string tenantId);
         Task<bool> DeleteTenantAsync(string tenantId);
+        Task<bool> TenantExistsAsync(string tenantId);
     }
 }

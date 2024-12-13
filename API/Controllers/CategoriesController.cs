@@ -4,10 +4,12 @@ using API.Dtos;
 using API.Entities;
 using API.Helpers.Mapping;
 using API.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    [Authorize]
     public class CategoriesController(IGenericRepository<Category> _categoryRepo) : BaseApiController
     {
         [HttpPost]

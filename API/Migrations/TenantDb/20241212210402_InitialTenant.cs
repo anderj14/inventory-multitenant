@@ -5,7 +5,7 @@
 namespace API.Migrations.TenantDb
 {
     /// <inheritdoc />
-    public partial class InitialTenantEntity : Migration
+    public partial class InitialTenant : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -3,10 +3,12 @@ using API.Dtos;
 using API.Entities;
 using API.Helpers.Mapping;
 using API.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    [Authorize]
     public class SuppliersController(IGenericRepository<Supplier> _supplierRepo) : BaseApiController
     {
         [HttpPost]

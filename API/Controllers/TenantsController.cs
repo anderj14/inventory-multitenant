@@ -14,6 +14,9 @@ namespace API.Controllers
 
             try
             {
+                if (await _tenantService.TenantExistsAsync(tenantCreateDto.Id))
+                    return BadRequest($"Tenant '{tenantCreateDto.Name}' already exists.");
+
                 var tenant = await _tenantService.CreateAsync(tenantCreateDto);
                 return CreatedAtAction(nameof(GetTenantById), new { tenantId = tenant.Id }, tenant);
             }
