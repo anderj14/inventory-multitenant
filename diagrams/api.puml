@@ -1,0 +1,120 @@
+@startuml
+
+package API.Entities {
+    class Tenant {
+        +string Id
+        +string Name
+        +string? ConnectionString
+    }
+
+    class AppUser {
+        +string TenantId
+    }
+
+    class Product {
+        +string TenantId
+    }
+
+    class Brand {
+        +string TenantId
+    }
+
+    class Category {
+        +string TenantId
+    }
+
+    class InventoryMovement {
+        +string TenantId
+    }
+
+    class Supplier {
+        +string TenantId
+    }
+
+    class Warehouse {
+        +string TenantId
+    }
+}
+
+package API.Data {
+    class TenantDbcontext {
+        +DbSet<Tenant> Tenants
+    }
+
+    class ApplicationDbContext {
+        +string ActiveTenantId
+        +string ActiveTenantConnectionString
+        +DbSet<AppUser> Users
+        +DbSet<Product> Products
+        +DbSet<Brand> Brands
+        +DbSet<Category> Categories
+        +DbSet<InventoryMovement> InventoryMovements
+        +DbSet<Supplier> Suppliers
+        +DbSet<Warehouse> Warehouses
+        +OnModelCreating(modelBuilder: ModelBuilder)
+        +OnConfiguring(optionsBuilder: DbContextOptionsBuilder)
+    }
+}
+
+package API.Services {
+    class TenantContextService {
+        +string? TenantId
+        +string? ConnectionString
+        +SetTenantAsync(tenant: string): Task<bool>
+    }
+
+    class TenantService {
+        +CreateAsync(tenantCreateDto: TenantCreateDto): Task<Tenant>
+        +GetAllTenantsAsync(): Task<ICollection<Tenant>>
+        +GetTenantByIdAsync(tenantId: string): Task<Tenant>
+        +DeleteTenantAsync(tenantId: string): Task<bool>
+        +TenantExistsAsync(tenantId: string): Task<bool>
+    }
+}
+
+package API.Dtos {
+    class TenantCreateDto {
+        +string Id
+        +string Name
+        +bool Isolated
+    }
+}
+
+package API.Interfaces {
+    interface ITenantContextService {
+        +string? TenantId
+        +string? ConnectionString
+        +SetTenantAsync(tenant: string): Task<bool>
+    }
+
+    interface ITenantService {
+        +CreateAsync(tenantCreateDto: TenantCreateDto): Task<Tenant>
+        +GetAllTenantsAsync(): Task<ICollection<Tenant>>
+        +GetTenantByIdAsync(tenantId: string): Task<Tenant>
+        +DeleteTenantAsync(tenantId: string): Task<bool>
+        +TenantExistsAsync(tenantId: string): Task<bool>
+    }
+}
+
+package API.Controllers {
+    class TenantsController {
+        +CreateTenant(tenantCreateDto: TenantCreateDto): Task<IActionResult>
+        +Get(): Task<IActionResult>
+        +GetTenantById(tenantId: string): Task<IActionResult>
+        +DeleteTenant(tenantId: string): Task<IActionResult>
+    }
+}
+
+TenantDbcontext --> Tenant : "DbSet"
+ApplicationDbContext --> AppUser : "DbSet"
+ApplicationDbContext --> Product : "DbSet"
+ApplicationDbContext --> Brand : "DbSet"
+ApplicationDbContext --> Category : "DbSet"
+ApplicationDbContext --> InventoryMovement : "DbSet"
+ApplicationDbContext --> Supplier : "DbSet"
+ApplicationDbContext --> Warehouse : "DbSet"
+TenantContextService ..> ITenantContextService
+TenantService ..> ITenantService
+TenantsController ..> ITenantService
+
+@enduml

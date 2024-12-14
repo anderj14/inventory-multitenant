@@ -1,0 +1,86 @@
+@startuml
+
+' Class definitions
+class AppUser {
+    +string TenantId
+    +ICollection<InventoryMovement> InventoryMovements
+}
+
+class BaseEntity {
+    +int Id
+    +string TenantId
+}
+
+class Brand {
+    +string BrandName
+    +string BrandDescription
+    +ICollection<Product> Products
+}
+
+class Category {
+    +string CategoryName
+    +string CategoryDescription
+    +ICollection<Product> Products
+}
+
+class InventoryMovement {
+    +int Quantity
+    +DateTime Date
+    +string MovementType
+    +string Comment
+    +int ProductId
+    +string AppUserId
+    +Product Product
+    +AppUser AppUser
+}
+
+class Product {
+    +string Name
+    +string Description
+    +string SKU
+    +int Quantity
+    +decimal UnitPrice
+    +bool IsActive
+    +string? ImageUrl
+    +int CategoryId
+    +int BrandId
+    +int SupplierId
+    +Category Category
+    +Brand Brand
+    +Supplier Supplier
+}
+
+class Supplier {
+    +string Name
+    +string ContactInfo
+    +string Phone
+    +string Address
+    +ICollection<Product> Products
+}
+
+class Tenant {
+    +string Id
+    +string Name
+    +string? ConnectionString
+}
+
+class Warehouse {
+    +string Name
+    +string Address
+    +ICollection<Product> Products
+    +ICollection<InventoryMovement> InventoryMovements
+}
+
+' Relationships
+AppUser -- InventoryMovement : "Has"
+Brand -- Product : "Owns"
+Category -- Product : "Owns"
+Product -- InventoryMovement : "Associated with"
+Product -- Supplier : "Supplied by"
+Product -- Category : "Belongs to"
+Product -- Brand : "Belongs to"
+Supplier -- Product : "Supplies"
+Warehouse -- Product : "Contains"
+Warehouse -- InventoryMovement : "Records"
+
+@enduml
